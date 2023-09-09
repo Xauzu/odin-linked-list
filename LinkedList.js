@@ -86,4 +86,57 @@ module.exports = class LinkedList {
         }
         return null;
     }
+    pop() {
+        if (this._size > 0) {
+            let current = this._head;
+            let next = current.nextNode;
+
+            // Single element in linkedlist
+            if (next === null) {
+                this._head = null;
+                this._size = 0;
+                return current;
+            }
+
+            // 2 or more elements in linkedlist
+            while (next.nextNode !== null) {
+                current = next;
+                next = next.nextNode;
+            }
+
+            current.nextNode = null;
+            this._size--;
+            return next;
+        }
+        return null;
+    }
+    find(val) {
+        let index = 0;
+        let current = this._head;
+        while (current !== null) {
+            if (current.value === val) return index;
+            index++;
+            current = current.nextNode;
+        }
+        return null;
+    }
+    contains(val) {
+        if (this.find(val) !== null) return true;
+        return false;
+    }
+    toString() {
+        if (this._size < 1) {
+            return null
+        }
+
+        let results = `( ${this._head.value} )`;
+        let current = this._head.nextNode;
+
+        while (current !== null) {
+            results += ` -> ( ${current.value} )`
+            current = current.nextNode;
+        }
+
+        return results += ' -> null';
+    }
 }

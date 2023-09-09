@@ -139,4 +139,65 @@ module.exports = class LinkedList {
 
         return results += ' -> null';
     }
+    #iterateBefore(index) {
+        // Iterate up to index - 1 as current
+        let i = 1;
+        let current = this._head;
+        let next = current.nextNode;
+        while (next.nextNode !== null && i < index) {
+            i++;
+            current = next;
+            next = next.nextNode;
+        }
+        return {current, next};
+    }
+    insertAt(val, index) {
+        if (index < this._size) {
+            if (index === 0) this.prepend(val);
+            else if (index === this._size - 1) this.append(val);
+            else {
+                let {current, next} = this.#iterateBefore(index);
+
+                // Inserting potentially multiple linked nodes
+                if (val instanceof ListNode) {
+                    current.nextNode = val;
+                    while (current.nextNode !== null) {
+                        current = current.nextNode;
+                    }
+                    current.nextNode = next;
+
+                    this.#updateSize();
+                }
+                // Prepending a single value
+                else {
+                    const newNode = new ListNode(val, next);
+                    current.nextNode = newNode;
+                    this._size++;
+                }
+            }
+        }
+        else
+            throw new Error('Index out of bounds.');
+    }
+    removeAt(index) {
+        if (index < this._size) {
+            if (index === 0) {
+                const next = this._head.nextNode;
+                this._head.nextNode = null;
+                this._head = next;
+            }
+            else if (index === this._size - 1) this.pop();
+            else {
+                let {current, next} = this.#iterateBefore(index);
+
+                const afterNext = next.nextNode;
+
+                // current -> next -> afterNext
+                next.nextNode = null;
+                current.nextNode = afterNext;
+            }
+        }
+        else
+            throw new Error('Index out of bounds.');
+    }
 }
